@@ -15,11 +15,11 @@ public class GraphSerializer {
 			return "";
 		} else {
 			String nodeAndNeighbours = "";
-			for (int i = 0; i < largestNode(); i++) {
-				Node node = graph.find(Integer.toString(i));
+			for (int i = 0; i < graph.nodes().size(); i++) {
+				Node node = graph.nodes().get(i);
 				if (node != null) {
 					nodeAndNeighbours += node.name();
-					for (int j = 0; j < largestNode(); j++) {
+					for (int j = 0; j < node.neighbours().size(); j++) {
 						Node neighbour = node.neighbours().get(j);
 						nodeAndNeighbours += " ";
 						nodeAndNeighbours += neighbour.name();

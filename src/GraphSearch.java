@@ -10,9 +10,11 @@ public class GraphSearch {
 	public static void main(String[] args) {
 		String fileName = args[1];
 		GraphSearch search = new GraphSearch();
+		search.readGraph(fileName);
 		if (search.isPartOne(args)) {
-			search.readGraph(fileName);
 			search.printGraph(fileName);
+		} else if (search.isPartTwo(args)) {
+			search.printNeighbourSearchResult(args);
 		}
 	}
 	
@@ -33,20 +35,38 @@ public class GraphSearch {
 		
 		return resultList;
 	}
+	
+	private void printNeighbourSearchResult(String[] args) {
+		List<Node> results;
+		int neighbourLimit;
+		try {
+			neighbourLimit = Integer.parseInt(args[2]);
+			results = neighbourSearch(neighbourLimit);
+			print("Number of nodes with at least " + neighbourLimit + " neighbours: " + results.size());
+			print("\n");
+		} catch (Exception e) {
+			printError("Could not parse second argument.\n");
+		}
+	}
 
 	private void printGraph(String fileName) {
-		GraphSerializer serializer = new GraphSerializer(reader.graph());
+		GraphSerializer serializer = new GraphSerializer(graph);
 		print(serializer.serialize());
 	}
 
-	private void print(String output) {
+	private static void print(String output) {
 		System.out.print(output);
+	}
+	
+	private static void printError(String output) {
+		System.err.print(output);
 	}
 
 	private void readGraph(String fileName) {
 		reader = new Reader();
 		try {
 			reader.read(fileName);
+			graph = reader.graph();
 		} catch (IOException e) {
 			System.err.println("Invalid file name");
 			System.exit(1);
@@ -55,6 +75,10 @@ public class GraphSearch {
 
 	private boolean isPartOne(String[] args) {
 		return args[0].equals("-p1");
+	}
+	
+	private boolean isPartTwo(String[] args) {
+		return args[0].equals("-p2");
 	}
 
 }

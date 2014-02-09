@@ -30,15 +30,4 @@ public class GraphSerializer {
 			return nodeAndNeighbours;
 		}
 	}
-
-	private int largestNode() {
-		int maxNode = 1;
-		for (Node n : graph.nodes()) {
-			int currentNode = Integer.parseInt(n.name());
-			if (currentNode > maxNode)
-				maxNode = currentNode;
-		}
-		return maxNode;
-	}
-
 }

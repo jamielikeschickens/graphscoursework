@@ -11,57 +11,20 @@ public class GraphSearch {
 		String fileName = args[1];
 		GraphSearch search = new GraphSearch();
 		search.readGraph(fileName);
-		if (search.isPartOne(args)) {
-			search.printGraph(fileName);
-		} else if (search.isPartTwo(args)) {
-			search.printNeighbourSearchResult(args);
+		if (search.isPart(1, args)) {
+			search.printGraph();
+		} else if (search.isPart(2, args)) {
+			int minimumNumberOfNeighbours = Integer.parseInt(args[2]);
+			search.printNeighbourSearchResult(minimumNumberOfNeighbours);
 		}
 	}
-	
+
 	public GraphSearch() { }
 	
 	public GraphSearch(Graph graph) {
 		this.graph = graph;
 	}
 	
-	public List<Node> neighbourSearch(int n) {
-		List<Node> resultList = new ArrayList<Node>();
-		
-		for (Node node : graph.nodes()) {
-			if (node.neighbours().size() >= n) {
-				resultList.add(node);
-			}
-		}
-		
-		return resultList;
-	}
-	
-	private void printNeighbourSearchResult(String[] args) {
-		List<Node> results;
-		int neighbourLimit;
-		try {
-			neighbourLimit = Integer.parseInt(args[2]);
-			results = neighbourSearch(neighbourLimit);
-			print("Number of nodes with at least " + neighbourLimit + " neighbours: " + results.size());
-			print("\n");
-		} catch (Exception e) {
-			printError("Could not parse second argument.\n");
-		}
-	}
-
-	private void printGraph(String fileName) {
-		GraphSerializer serializer = new GraphSerializer(graph);
-		print(serializer.serialize());
-	}
-
-	private static void print(String output) {
-		System.out.print(output);
-	}
-	
-	private static void printError(String output) {
-		System.err.print(output);
-	}
-
 	private void readGraph(String fileName) {
 		reader = new Reader();
 		try {
@@ -72,13 +35,48 @@ public class GraphSearch {
 			System.exit(1);
 		}
 	}
+	
+	public List<Node> neighbourSearch(int minimumNumberOfNeighbours) {
+		List<Node> nodesWithNorMoreNeighbours = new ArrayList<Node>();
+		
+		for (Node node : graph.nodes()) {
+			if (nodeHasMinimumNumberOfNeigboursOrMore(minimumNumberOfNeighbours, node)) {
+				nodesWithNorMoreNeighbours.add(node);
+			}
+		}
+		
+		return nodesWithNorMoreNeighbours;
+	}
 
-	private boolean isPartOne(String[] args) {
-		return args[0].equals("-p1");
+	private boolean nodeHasMinimumNumberOfNeigboursOrMore(int minimumNumberOfNeighbours, Node node) {
+		return node.neighbours().size() >= minimumNumberOfNeighbours;
 	}
 	
-	private boolean isPartTwo(String[] args) {
-		return args[0].equals("-p2");
+	private void printNeighbourSearchResult(int minimumNumberOfNeighbours) {
+		try {
+			List<Node> results = neighbourSearch(minimumNumberOfNeighbours);
+			print("Number of nodes with at least " + minimumNumberOfNeighbours + " neighbours: " + results.size());
+			print("\n");
+		} catch (Exception e) {
+			printError("Could not parse second argument.\n");
+		}
+	}
+
+	private void printGraph() {
+		GraphSerializer serializer = new GraphSerializer(graph);
+		print(serializer.serialize());
+	}
+	
+	private boolean isPart(int part, String[] args) {
+		return args[0].equals("-p" + Integer.toString(part));
+	}
+	
+	private static void print(String output) {
+		System.out.print(output);
+	}
+	
+	private static void printError(String output) {
+		System.err.print(output);
 	}
 
 }

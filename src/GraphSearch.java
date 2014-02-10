@@ -14,8 +14,12 @@ public class GraphSearch {
 		if (search.isPart(1, args)) {
 			search.printGraph();
 		} else if (search.isPart(2, args)) {
-			int minimumNumberOfNeighbours = Integer.parseInt(args[2]);
-			search.printNeighbourSearchResult(minimumNumberOfNeighbours);
+			try {
+				int minimumNumberOfNeighbours = Integer.parseInt(args[2]);
+				search.printNeighbourSearchResult(minimumNumberOfNeighbours);
+			} catch (Exception e) {
+				search.printErrorAndExit("Can't parse 3rd argument");;
+			}
 		}
 	}
 
@@ -31,9 +35,17 @@ public class GraphSearch {
 			reader.read(fileName);
 			graph = reader.graph();
 		} catch (IOException e) {
-			System.err.println("Invalid file name");
-			System.exit(1);
+			printErrorAndExit("Invalid file name");
 		}
+	}
+
+	private void printErrorAndExit(String errorMessage) {
+		printError(errorMessage);
+		exitWithError();
+	}
+	
+	private void exitWithError() {
+		System.exit(1);
 	}
 	
 	public List<Node> neighbourSearch(int minimumNumberOfNeighbours) {
@@ -58,7 +70,7 @@ public class GraphSearch {
 			print("Number of nodes with at least " + minimumNumberOfNeighbours + " neighbours: " + results.size());
 			print("\n");
 		} catch (Exception e) {
-			printError("Could not parse second argument.\n");
+			printErrorAndExit("Could not parse second argument.\n");
 		}
 	}
 

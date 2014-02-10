@@ -24,52 +24,52 @@ public class GraphSearchTest {
 	
 	@Test
 	public void graphWithOneNodeOneNeighbourWithAtLeastOneNeightbourReturnsOneNode() throws Exception {
-		Node node1 = new Node("1");
-		node1.addNeighbour(new Node("2"));
-		graph.add(node1);
-		resultList.add(node1);
+		Node node = new Node("1");
+		node.addNeighbour(new Node("2"));
+		graph.add(node);
+		resultList.add(node);
 		
 		assertEquals(resultList, runNeighbourSearch(1));
 	}
 	
 	@Test
 	public void graphWithTwoNodesOneNodeWithAtLeastOneNeighbourReturnsOneNode() throws Exception {
-		Node node1 = new Node("1");
+		Node node = new Node("1");
 		Node node3 = new Node("3");
-		node1.addNeighbour(new Node("2"));
-		graph.add(node1);
+		node.addNeighbour(new Node("2"));
+		graph.add(node);
 		graph.add(node3);
-		resultList.add(node1);
+		resultList.add(node);
 		
 		assertEquals(resultList, runNeighbourSearch(1));
 	}
 	
 	@Test
 	public void graphWithTwoNodesOneWithAtLeastTwoNeighboursReturnsOneNode() throws Exception {
-		Node node1 = new Node("1");
+		Node node = new Node("1");
 		Node node3 = new Node("3");
-		node1.addNeighbour(new Node("2"));
-		node1.addNeighbour(new Node("4"));
-		graph.add(node1);
+		node.addNeighbour(new Node("2"));
+		node.addNeighbour(new Node("4"));
+		graph.add(node);
 		graph.add(node3);
-		resultList.add(node1);
+		resultList.add(node);
 
 		assertEquals(resultList, runNeighbourSearch(2));
 	}
 	
 	@Test
 	public void graphWithTwoNodesBothWithAtLeastTwoNeighboursReturnsTwoNodes() throws Exception {
-		Node node1 = new Node("1");
-		Node node3 = new Node("3");
-		node1.addNeighbour(new Node("2"));
-		node1.addNeighbour(new Node("4"));
-		node1.addNeighbour(new Node("5"));
-		node3.addNeighbour(new Node("6"));
-		node3.addNeighbour(new Node("7"));
-		graph.add(node1);
-		graph.add(node3);
-		resultList.add(node1);
-		resultList.add(node3);
+		Node node = new Node("1");
+		Node node_three = new Node("3");
+		node.addNeighbour(new Node("2"));
+		node.addNeighbour(new Node("4"));
+		node.addNeighbour(new Node("5"));
+		node_three.addNeighbour(new Node("6"));
+		node_three.addNeighbour(new Node("7"));
+		graph.add(node);
+		graph.add(node_three);
+		resultList.add(node);
+		resultList.add(node_three);
 
 		assertEquals(resultList, runNeighbourSearch(2));
 	}

@@ -126,7 +126,7 @@ public class GraphSearchTest {
 	}
 	
 	@Test
-	public void TwoFullyConnectedNodesWithOneNotFullyConnected() throws Exception {
+	public void twoFullyConnectedNodesWithOneNotFullyConnected() throws Exception {
 		Node node = new Node("1");
 		Node node_two = new Node("2");
 		Node node_three = new Node("3");
@@ -151,7 +151,100 @@ public class GraphSearchTest {
 		resultList.add(node_two);
 		assertNodeListEquals(resultList, findFullyConnectedNeighbours());
 	}
+	
+	@Test
+	public void threeFullyConnectedNeighboursTwoNotFullyConnected() throws Exception {
+		Node node = new Node("1");
+		Node node_two = new Node("2");
+		Node node_three = new Node("3");
+		Node node_four = new Node("4");
+		Node node_five = new Node("5");
+		
+		node.addNeighbour(node_two);
+		node.addNeighbour(node_three);
+		node.addNeighbour(node_four);
+		node.addNeighbour(node_five);
+		
+		node_two.addNeighbour(node);
+		node_two.addNeighbour(node_four);
+		node_two.addNeighbour(node_five);
+		
+		node_three.addNeighbour(node);
+		
+		node_four.addNeighbour(node);
+		node_four.addNeighbour(node_two);
+		node_four.addNeighbour(node_five);
+		
+		node_five.addNeighbour(node);
+		node_five.addNeighbour(node_two);
+		node_five.addNeighbour(node_four);
+		
+		graph.add(node);
+		graph.add(node_two);
+		graph.add(node_three);
+		graph.add(node_four);
+		graph.add(node_five);
+		
+		resultList.add(node_two);
+		// Three has only 1 neighbour Node 1, which is also connected to it. Therefore fully connected
+		resultList.add(node_three);
+		resultList.add(node_four);
+		resultList.add(node_five);
+		assertNodeListEquals(resultList, findFullyConnectedNeighbours());
+	}
+	
+	@Test
+	public void emptyGraphHasNoCliques() throws Exception {
+		assertEquals(0, getCliquesOfSize(0));
+	}
+	
+	@Test
+	public void oneNodeHasNoCliques() throws Exception {
+		Node node = new Node("1");
+		graph.add(node);
+		
+		assertEquals(0, getCliquesOfSize(0));
+		assertEquals(0, getCliquesOfSize(1));
+	}
+	
+	@Test
+	public void twoConnectedNodesHaveOneCliqueOfSizeTwo() throws Exception {
+		Node node = new Node("1");
+		Node node_two = new Node("2");
+		
+		node.addNeighbour(node_two);
+		node_two.addNeighbour(node);
+		
+		graph.add(node);
+		graph.add(node_two);
+		
+		assertEquals(1, getCliquesOfSize(2));
+	}
+	
+	@Test
+	public void threeConnectedNodesHaveThreeCliquesOfSizeTwo() throws Exception {
+		Node node = new Node("1");
+		Node node_two = new Node("2");
+		Node node_three = new Node("3");
+		
+		node.addNeighbour(node_two);
+		node.addNeighbour(node_three);
+		node_two.addNeighbour(node);
+		node_two.addNeighbour(node_three);
+		node_three.addNeighbour(node);
+		node_three.addNeighbour(node_two);
+		
+		graph.add(node);
+		graph.add(node_two);
+		graph.add(node_three);
+		
+		assertEquals(3, getCliquesOfSize(2));
+	}
 
+	private int getCliquesOfSize(int sizeOfClique) {
+		return new GraphSearch(graph).cliquesOfSize(sizeOfClique);
+	}
+	
 	private void assertNodeListEquals(List<Node> expected, List<Node> actual) {
 		String errorMessage = "Expected: " + createArrayOfNodeNames(expected) + " " +
 								"Actual: " + createArrayOfNodeNames(actual);
@@ -173,7 +266,7 @@ public class GraphSearchTest {
 	}
 	
 	private List<Node> findFullyConnectedNeighbours() {
-		return new GraphSearch(graph).findFullyConnectedNeighbours();
+		return new GraphSearch(graph).findFullyConnectedNodes();
 	}
 	
 	private List<Node> neighbourSearch(int n) {

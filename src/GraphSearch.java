@@ -27,6 +27,8 @@ public class GraphSearch {
 			}
 		} else if (search.isPart(3, args)) {
 			print("number of nodes with fully connected neighbours: " + search.findFullyConnectedNodes().size());
+		} else if (search.isPart(4, args)) {
+			print("Number of cliques of size " + args[2] + ": " + search.cliquesOfSize(Integer.parseInt(args[2])));
 		}
 	}
 
@@ -121,7 +123,7 @@ public class GraphSearch {
 			fullyConnectedNeighours.add(node);
 	}
 
-	private boolean isNeighbourFullyConnectedToNode(Node node,List<Node> nodeAndNeighbours) {
+	private boolean isNeighbourFullyConnectedToNode(Node node, List<Node> nodeAndNeighbours) {
 		boolean fullyConnected = false;
 		for (Node neighbour : node.neighbours()) {
 			nodeAndNeighbours.remove(neighbour);
@@ -138,29 +140,46 @@ public class GraphSearch {
 	}
 
 	public int cliquesOfSize(int sizeOfClique) {
+		int numberOfCliquesOfRequestedSize = 0;
 		
-		int numberOfNodesInGraph = graph.nodes().size();
-		if (numberOfNodesInGraph <= 1)
-			return 0;
+		List<List<Node>> powerSet = powerSet(graph.nodes());
+		powerSet.remove(0);
 		
-		return powerSet(graph.nodes()).size();
+		List<List<Node>> listOfSetsSameSizeAsClique = new ArrayList<>();
+		for (List<Node> list : powerSet) {
+			if (list.size() == sizeOfClique) {
+				listOfSetsSameSizeAsClique.add(list);
+			}
+		}
+		
+		for (List<Node> list : listOfSetsSameSizeAsClique) {
+			if (isNeighbourFullyConnectedToNode(list.get(0), list)) {
+				++numberOfCliquesOfRequestedSize;
+			}
+		}
+		return numberOfCliquesOfRequestedSize;
+				
 	}
 	
-	private <T> List<List<T>> powerSet(List<T> list) {
-		List<List<T>> powerSet = new ArrayList<List<T>>();
-		Iterator<List<T>> iterator = list.iterator()
-		while (iterator.hasNext()) {
-			T item = iterator.next();
-			iterator.remove(item);
-			for (T otherItem : list) {
-				ArrayList<T> memberOfPowerSet = new ArrayList<T>();
-				memberOfPowerSet.add(item);
-				memberOfPowerSet.add(otherItem);
-				powerSet.add(memberOfPowerSet);
+	public List<List<Node>> powerSet(List<Node> list) {
+		List<List<Node>> powerSet = new ArrayList<List<Node>>();
+		powerSet.add(new ArrayList<Node>());
+		
+		for (Node node : list) {
+			List<List<Node>> newPowerSet = new ArrayList<List<Node>>();
+			for (List<Node> subset : powerSet) {
+				newPowerSet.add(subset);
+				
+				List<Node> newSubset = new ArrayList<Node>(subset);
+				newSubset.add(node);
+				newPowerSet.add(newSubset);
 			}
-			list.add(item);
+			
+			powerSet = newPowerSet;
 		}
-		return powerSet;
+		
+		return powerSet;		
+		
 	}
 
 }
